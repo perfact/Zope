@@ -456,8 +456,9 @@ class File(Persistent, Implicit, PropertyManager,
     security.declarePrivate('update_data')
     def update_data(self, data, content_type=None, size=None):
         if isinstance(data, text_type):
-            raise TypeError('Data can only be bytes or file-like.  '
-                            'Unicode objects are expressly forbidden.')
+            data = data.encode('utf-8')
+            #raise TypeError('Data can only be bytes or file-like.  '
+            #                'Unicode objects are expressly forbidden.')
 
         if content_type is not None:
             self.content_type = content_type
@@ -626,6 +627,12 @@ class File(Persistent, Implicit, PropertyManager,
     if PY2:
         def __str__(self):
             return str(self.data)
+    else:
+        def __str__(self):
+            if isinstance(self.data, str):
+                return self.data
+            else:
+                return self.data.decode('utf-8')
 
     def __bool__(self):
         return True
@@ -849,8 +856,9 @@ class Image(File):
     security.declarePrivate('update_data')
     def update_data(self, data, content_type=None, size=None):
         if isinstance(data, text_type):
-            raise TypeError('Data can only be bytes or file-like.  '
-                            'Unicode objects are expressly forbidden.')
+            data = data.encode('utf-8')
+            #raise TypeError('Data can only be bytes or file-like.  '
+            #                'Unicode objects are expressly forbidden.')
 
         if size is None:
             size = len(data)
